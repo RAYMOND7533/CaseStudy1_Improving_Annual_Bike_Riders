@@ -1,0 +1,446 @@
+---
+title: "How Case Study: Does a Bike-Share Navigate Speedy Success"
+author: "Raymond"
+date: "2022-09-02"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+## Guiding questions
+
+#### What is the problem you are trying to solve ?
+I'm working towards converting the casual riders of Cyclistic from casual riders into membership.
+
+#### How can your insights drive business decisions ?
+The insights will be important to help design better marketing strategies by understanding why would a casual rider convert to membership.
+
+## Key tasks
+
+#### Identify the business task ?
+It was concluded that annual membership is more profitable than single or full day ride, hence selling more annual membership will bring more profits to the company. To sell more annual membership, a marketing campaign will be organised to help with the conversion from casual to membership. It is important to understand why would a rider convert to design the marketing campaign with maximum efficiency in converting the riders.
+
+#### Consider key stakeholders ?
+The director of marketing and marketing team.
+
+#### Where is your data located ?
+Data is downloaded into local drive.
+
+#### How is the data organized ?
+Data is stored, some in quarterly some by monthly from 2014 to 2022 in csv file. There are two types of data, namely trip data and station data.
+
+#### Are there issues with bias or credibility in this data ? Does your data ROCCC ?
+There is no issue with the data, because it was directly collected from the customers, hence no issue with bias and credibility. It is ROCCC, reliable, original, comprehensive, current and cited.
+
+#### How are you addressing licensing, privacy, security and accessibility ?
+The data was under the license by Motivate International Inc., the data set also does not contain any sensitive or personal data, hence no issue with PDPA.
+
+#### How did you verify the data's integrity ?
+In order to measure the data intergrity, it needs to be
+- accurate
+- complete
+- consistent
+- trustworthy
+The data is complete as it has all the required measurements, is consistent throughout the years as seen in the csv with equal column and same data variable, is also credible due to the license it is under, hence trustworthy.
+
+#### How does it help you answer your question ?
+By understanding the data and its relationship such as the type of ride, where it started and ended, what time did the ride start, we can find the correlation between these data and the type of users (annual members and casual members)
+
+#### Are there any problems with the data ?
+There are a few 'N/A' in the value of the data as well as duplicated fields which were required to be removed.
+
+## Process
+
+#### What tools are you choosing and why ?
+I'm using R as the data is huge, hence going through it with programming language is easier.
+
+#### Have you ensured your data's integrity ?
+The data is ROCCC
+
+#### What steps have you taken to ensure that your data is clean ?
+The data is concatenated into a single data frame, with empty, NA and duplicated rows removed, the unique values are examined to ensure the right variables without any spelling error.
+
+#### How can you verify that your data is clean and ready to analyze ?
+I used filter to check if there is any missing values, count to check if there is the right number of variables and duplicate to check for potential duplicate rows.
+
+#### Have you documented your cleaning process so you can review and share those results ?
+Yes the cleaning process is documented in an RMD file and commented accordingly.
+
+## Deliverable
+
+#### A clear statement of the business task
+To give sound insights that will help design better marketing strategies to maximize the possibility of converting single pass and full day rider into annual membership.
+
+## Guiding questions for future marketing program
+
+#### 1) How do annual members and casual riders use Cyclistic bikes differently ?
+
+#### 2) Why would casual riders buy Cyclistic annual membership ?
+
+#### 3) How can Cyclistic use digital media influence casual riders to become members ?
+
+
+
+```{r packages}
+install.packages("tidyverse", repos = "http://cran.us.r-project.org")
+install.packages("janitor", repos = "http://cran.us.r-project.org")
+install.packages("scales", repos = "http://cran.us.r-project.org")
+
+library("tidyverse")
+library("janitor")
+library("scales")
+```
+
+```{r read data}
+df1 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202004-divvy-tripdata.csv")
+df2 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202005-divvy-tripdata.csv")
+df3 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202006-divvy-tripdata.csv")
+df4 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202007-divvy-tripdata.csv")
+df5 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202008-divvy-tripdata.csv")
+df6 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202009-divvy-tripdata.csv")
+df7 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202010-divvy-tripdata.csv")
+df8 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202011-divvy-tripdata.csv")
+df9 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202012-divvy-tripdata.csv")
+df10 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202101-divvy-tripdata.csv")
+df11 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202102-divvy-tripdata.csv")
+df12 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202103-divvy-tripdata.csv")
+df13 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202104-divvy-tripdata.csv")
+df14 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202105-divvy-tripdata.csv")
+df15 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202106-divvy-tripdata.csv")
+df16 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202107-divvy-tripdata.csv")
+df17 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202108-divvy-tripdata.csv")
+df18 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202109-divvy-tripdata.csv")
+df19 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202110-divvy-tripdata.csv")
+df20 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202111-divvy-tripdata.csv")
+df21 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202112-divvy-tripdata.csv")
+df22 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202201-divvy-tripdata.csv")
+df23 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202202-divvy-tripdata.csv")
+df24 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202203-divvy-tripdata.csv")
+df25 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202204-divvy-tripdata.csv")
+df26 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202205-divvy-tripdata.csv")
+df27 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202206-divvy-tripdata.csv")
+df28 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/202207-divvy-tripdata.csv")
+df29 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/Divvy_Trips_2014_Q1Q2.csv")
+df30 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/Divvy_Trips_2015_07.csv")
+df31 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/Divvy_Trips_2015_08.csv")
+df32 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/Divvy_Trips_2015_09.csv")
+df33 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/Divvy_Trips_2015_Q4.csv")
+df34 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/Divvy_Trips_2015_Q1.csv")
+df35 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/Divvy_Trips_2015_Q2.csv")
+df36 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/Divvy_Trips_2016_Q3.csv")
+df37 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/Divvy_Trips_2016_Q4.csv")
+df38 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/Divvy_Trips_2017_Q1.csv")
+df39 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/Divvy_Trips_2017_Q2.csv")
+df40 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/Divvy_Trips_2017_Q3.csv")
+df41 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/Divvy_Trips_2017_Q4.csv")
+df42 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/Divvy_Trips_2018_Q1.csv")
+df43 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/Divvy_Trips_2018_Q2.csv")
+df44 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/Divvy_Trips_2018_Q3.csv")
+df45 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/Divvy_Trips_2018_Q4.csv")
+df46 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/Divvy_Trips_2019_Q1.csv")
+df47 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/Divvy_Trips_2019_Q2.csv")
+df48 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/Divvy_Trips_2019_Q3.csv")
+df49 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/Divvy_Trips_2019_Q4.csv")
+df50 <- read_csv("C:/Users/raymond.yeong/Desktop/Data Analyst/Task 1/Dataset/Divvy_Trips_2020_Q1.csv")
+
+binded_df <- rbind(df1, df2, df3, df4, df5, df6, df7, df8, df9, df10, df11, df12, df13, df14, df15, df16, df17, df18, df19, df20, df21, df22, df23, df24, df25, df26, df27, df28)
+```
+#### Note to self
+realised, that there are two types of data, one with 13 variables and one with 12 variables, hence the columns of arguments do not match when binding them together, hence removed df29 and above.
+
+## Cleaning up data
+```{r cleaning the data}
+new_binded_df <- remove_empty(binded_df, which=c("rows", "cols"))
+count(filter(new_binded_df, start_station_name==''),start_station_name, member_casual,sort=TRUE)
+```
+
+## Count # of unique values for rideable types
+```{r}
+binded_df %>% 
+  count(rideable_type)
+```
+
+## Removing NA in the data frame
+```{r}
+new_binded_df <- na.omit(binded_df)
+```
+
+
+## Removing duplicates for ride_id
+```{r}
+new_binded_df_no_dups <- new_binded_df[!duplicated(new_binded_df$ride_id), ]
+```
+
+## Organize data and creating a column for riding time (minutes)
+```{r}
+clean_df <- new_binded_df_no_dups
+clean_df <- clean_df %>% 
+  mutate(riding_time = as.numeric(ended_at-started_at)/60)
+clean_df
+```
+
+## Organize data by year
+```{r}
+clean_df <- clean_df %>% 
+  mutate(year_month=paste(strftime(clean_df$started_at, "%Y"), "-",
+                          strftime(clean_df$started_at, "%m"), "-",
+                          strftime(clean_df$started_at, "%b")))
+clean_df
+```
+## Filtering for dta that is not in year_month for 2021 - 06 Jun and there is very few data there, hence meaningless // from tutorial but actually there is no data in June anyway
+```{r}
+clean_df <- filter(clean_df, year_month!="2021 - 06 (Jun)")
+clean_df
+```
+## creating new data weekday, even though it says weekday but its merely displaying the days , perhaps to call Days instead
+```{r}
+clean_df <- clean_df %>% 
+  mutate(weekday=strftime(clean_df$ended_at, "%a"))
+clean_df
+```
+## creating the starting hour as variable // but actually is just displaying the hour of the ended time the bike session ended ...
+```{r}
+clean_df <- clean_df %>% 
+  mutate(start_hour=strftime(clean_df$ended_at, format = "%H",tz = "UTC"))
+clean_df
+```
+
+## putting the clean_df to a new data frame named df, group the member casual which has two groups casual and member, then count the total ride_id and divide them by the total rows in the df to get %, unsure why using length though instead of directly count ??? i got the answer, it's to calculate the length of the data not the length of the individual data, but the total length of data of ride_id in the overall data frame
+```{r}
+df <- clean_df
+df %>% 
+  group_by(member_casual) %>% 
+  summarize(count=length(ride_id),
+            percentage_of_total=(length(ride_id)/nrow(df))*100)
+```
+
+## plot the table using bar chart of the member vs casual
+```{r}
+ggplot(df, aes(member_casual, fill=member_casual))+ geom_bar()+ labs(title="Chart-1 Member vs Casual distribution") + scale_y_continuous(labels=comma)
+```
+## plot casual_members for every month , group the data first by the year_month, then get the total ride_id by member and casual by the correspoding year_month and analyse accordingly
+```{r}
+df %>% 
+  group_by(year_month) %>%
+  summarize(count=length(ride_id),
+            percentage_of_total=(length(ride_id)/nrow(df))*100,
+            members_count=sum(member_casual=="member"),
+            members_percent=(sum(member_casual=="member")/length(ride_id))*100,
+            casual_count=sum(member_casual=="casual"),
+            casual_percent=(sum(member_casual=="casual")/length(ride_id))*100) %>% 
+  arrange(year_month)
+```
+At first glance, August seems to have more riders at ~6%,the percentage of members count in this 6% is also higher than its casual member, standing at 53%
+
+## plot the graph as bar chart but with flipper coord
+```{r}
+ggplot(df, aes(year_month, fill=member_casual))+
+  geom_bar()+
+  coord_flip()+
+  scale_y_continuous(labels=comma)
+```
+## now we group the data by the start_hour instead and to get the percentage instead of year_month
+```{r}
+start_hour_df <- df %>% 
+  group_by(start_hour) %>%
+  summarize(count=length(ride_id),
+            percentage_of_total=(length(ride_id)/nrow(df))*100,
+            members_count=sum(member_casual=="member"),
+            members_percent=(sum(member_casual=="member")/length(ride_id))*100,
+            casual_count=sum(member_casual=="casual"),
+            casual_percent=(sum(member_casual=="casual")/length(ride_id))*100) %>% 
+  arrange(start_hour)
+start_hour_df
+```
+## plot the graph, can be seen that the higher number of riders is at the 17th hour, member increase from the 5th hour and slowly decrease towards the night, from the 17th hour, while casual rider increase in the afternoon and night time
+```{r}
+ggplot(df, aes(start_hour, fill=member_casual))+
+  geom_bar()+
+  scale_y_continuous(labels=comma)
+```
+## now we plot the same graph but using facet_wrap for each of the days accordingly
+```{r}
+ggplot(df, aes(start_hour, fill=member_casual))+
+  geom_bar()+
+  facet_wrap(~weekday)+  
+  scale_y_continuous(labels=comma)+
+  theme(axis.text.x = element_text(size=6, angle=45))
+```
+There is a lot more casual riders on Saturday and Sunday , while weekday has more members
+
+## now we better understand the data, by separating into morning as before 12pm, afternoon as before 7pm and evening the remaining into a new variable as hour_of_the _day
+```{r}
+df <- mutate(df, hour_of_the_day=ifelse(df$start_hour<12, "Morning",
+                                        ifelse(df$start_hour>=12 & df$start_hour<19, "Afternoon", "Evening")))
+df
+```
+## see the percentage by casual and members rider by the group of hour_of_the da
+```{r}
+hour_type_df <- df %>% 
+  group_by(hour_of_the_day) %>%
+  summarize(count=length(ride_id),
+            percentage_of_total=(length(ride_id)/nrow(df))*100,
+            members_count=sum(member_casual=="member"),
+            members_percent=(sum(member_casual=="member")/length(ride_id))*100,
+            casual_count=sum(member_casual=="casual"),
+            casual_percent=(sum(member_casual=="casual")/length(ride_id))*100)
+hour_type_df
+```
+
+afternoon has the most percentage of riders, while morning has a lot more members rider than casual the rest of the day are a bit more balanced
+
+## plotting the table with coord flip
+```{r}
+ggplot(df, aes(hour_of_the_day, fill=member_casual))+
+  geom_bar()+
+  #facet_wrap(~hour_of_the_day, scales = "free")+
+  scale_y_continuous(labels=comma)+
+  coord_flip()
+```
+## checking to see how the irder differ based on the different days
+```{r}
+df %>% 
+  group_by(weekday) %>%
+  summarize(count=length(ride_id),
+            percentage_of_total=(length(ride_id)/nrow(df))*100,
+            members_count=sum(member_casual=="member"),
+            members_percent=(sum(member_casual=="member")/length(ride_id))*100,
+            casual_count=sum(member_casual=="casual"),
+            casual_percent=(sum(member_casual=="casual")/length(ride_id))*100)
+```
+members are mostly on weekdays probably due to work commute, while weekend has more casual riders probably due to tourist or for fun rides
+
+## plot the graph
+```{r}
+ggplot(df, aes(weekday, fill=member_casual))+
+  geom_bar()+
+  scale_y_continuous(labels=comma)
+```
+## but what about the rides that the member and casual riders ride ?
+```{r}
+df %>% 
+  group_by(rideable_type) %>%
+  summarize(count=length(ride_id),
+            percentage_of_total=(length(ride_id)/nrow(df))*100,
+            members_count=sum(member_casual=="member"),
+            members_percent=(sum(member_casual=="member")/length(ride_id))*100,
+            casual_count=sum(member_casual=="casual"),
+            casual_percent=(sum(member_casual=="casual")/length(ride_id))*100)
+```
+
+Mostly all rides the classic bike
+
+## plot the table
+```{r}
+ggplot(df, aes(rideable_type, fill=member_casual))+
+  geom_bar()+
+  scale_y_continuous(labels=comma)+
+  facet_wrap(~weekday)+
+  theme(axis.text.x = element_text(angle=25))
+```
+## sanity check to see riding_time
+```{r}
+summary(df$riding_time)
+```
+there seems to be issue as riding time cannot be negative, while the max riding time in almost days, hence could be some issue with returning of bike
+
+
+## checking outlier against quantile value
+```{r}
+quantiles <- quantile(df$riding_time, seq(0,1,by=0.05))
+quantiles
+```
+## It can be seen that the max value is obviously an outlier, hence can be removed and ignored, as well as the negative value, hence we only look at the value from 5%-95%
+```{r}
+new_df_without_outliers <- df %>% 
+  filter(riding_time > as.numeric(quantiles['5%'])) %>% 
+  filter(riding_time < as.numeric(quantiles['95%']))
+final_df <- new_df_without_outliers
+```
+
+## we now look at the riding time of both casual and member riders
+```{r}
+final_df %>% 
+  group_by(member_casual) %>% 
+  summarize(mean=mean(riding_time),
+            first_quarter=quantile(riding_time, 0.25),
+            median=median(riding_time),
+            third_quarter=quantile(riding_time, 0.75),
+            IQR = third_quarter-first_quarter)
+```
+## plot the graph as box plot
+```{r}
+ggplot(final_df, aes(x=member_casual, y=riding_time, fill=member_casual))+
+  geom_boxplot()
+```
+## we now check the riding time but grouped by the weekday
+```{r}
+final_df %>% 
+  group_by(weekday) %>% 
+  summarize(mean=mean(riding_time),
+            first_quarter=quantile(riding_time, 0.25),
+            median=median(riding_time),
+            third_quarter=quantile(riding_time, 0.75),
+            IQR = third_quarter-first_quarter)
+```
+## plot the boxplot
+```{r}
+ggplot(final_df, aes(x=weekday, y=riding_time, fill=member_casual))+
+  geom_boxplot()
+```
+casual riders spend more time riding than members
+
+## we then check for riding time but group by year_month
+```{r}
+final_df %>% 
+  group_by(year_month) %>% 
+  summarize(mean=mean(riding_time),
+            first_quarter=quantile(riding_time, 0.25),
+            median=median(riding_time),
+            third_quarter=quantile(riding_time, 0.75),
+            IQR = third_quarter-first_quarter)
+```
+## plot the boxplot
+```{r}
+ggplot(final_df, aes(x=year_month, y=riding_time, fill=member_casual))+
+  geom_boxplot()+
+  coord_flip()
+```
+winter period has less riders , hence less riding time
+
+## Insights
+
+#### Summary
+
+1) Overall there are more annual riders than casual riders , 58% is annual riders,
+
+2) There were less riders in general in winter period, where both annual and casual riders are minimal, with casual riders slightly lesser
+
+3) Average annual riders start their journey during the early morning and after working around ~5-6pm during the weekdays, which suggest that they commute to work daily with a bike, while casual riders peaks during the after office hours suggesting joy rides or ad hoc traveling as well as during weekend.
+
+
+4) To further confirm that annual riders ride for work, the trend for riding against each week day is almost similar.
+
+
+## Suggestion to convert more annual riders
+
+
+1) Work out a more attrative offer only for annual members
+
+2) Have different price tier during weekday and weekend, to have casual riders potentially paying more
+
+3) Have special offer for annual members who sign up during winter season
+
+4) Have certain limitation for casual riders wen riding, such as displacement travel or pay to unlock
+
+5) Have different price tier during the morning , afternoon and night to have casual riders potentially paying more than annual riders
